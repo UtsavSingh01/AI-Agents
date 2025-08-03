@@ -1,54 +1,35 @@
-#!/usr/bin/env python
-from random import randint
+import gradio as gr
+from .utils.FileHandler import FileHandler
 
-from pydantic import BaseModel
+from .userInputHandler import userInputHandler
 
-from crewai.flow import Flow, listen, start
+chat_history = []
 
-from padif.crews.poem_crew.poem_crew import PoemCrew
+def on_message(user_message, history):
+    return userInputHandler(user_message, history)
+    
 
+def on_upload(file):
+    saved_path = FileHandler(file)
+    return f"✅ File saved to: {saved_path}"
 
+with gr.Blocks() as demo:
+    gr.Markdown("## 🧠 Resume Assistant Chatbot (CrewAI + Gradio)")
 
+    with gr.Row():
+        with gr.Column(scale=3):
+            chatbot = gr.Chatbot()
+            msg_input = gr.Textbox(label="Ask a question", placeholder="e.g., Can you convert this resume to LaTeX?")
+            send_btn = gr.Button("Send")
+            clear_btn = gr.Button("Clear Chat")
 
-class PoemState(BaseModel):
-    sentence_count: int = 1
+        with gr.Column(scale=1):
+            upload = gr.File(label="Upload your resume", file_types=[".pdf", ".docx"])
+            upload_status = gr.Textbox(label="Upload result", interactive=False)
 
+    send_btn.click(on_message, inputs=[msg_input, chatbot], outputs=[chatbot, chatbot])
+    msg_input.submit(on_message, inputs=[msg_input, chatbot], outputs=[chatbot, chatbot])
+    clear_btn.click(lambda: ([], ""), None, [chatbot, msg_input])
+    upload.change(on_upload, inputs=upload, outputs=upload_status)
 
-class PoemFlow(Flow[PoemState]):
-
-    @start()
-    def generate_sentence_count(self):
-        print("Generating sentence count")
-        self.state.sentence_count = randint(1, 5)
-
-    @listen(generate_sentence_count)
-    def generate_poem(self):
-        print("Generating poem")
-        result = (
-            PoemCrew()
-            .crew()
-            .kickoff(inputs={"sentence_count": self.state.sentence_count})
-        )
-
-        print("Poem generated", result.raw)
-        self.state.poem = result.raw
-
-    @listen(generate_poem)
-    def save_poem(self):
-        print("Saving poem")
-        with open("poem.txt", "w") as f:
-            f.write(self.state.poem)
-
-
-def kickoff():
-    poem_flow = PoemFlow()
-    poem_flow.kickoff()
-
-
-def plot():
-    poem_flow = PoemFlow()
-    poem_flow.plot()
-
-
-if __name__ == "__main__":
-    kickoff()
+demo.launch()

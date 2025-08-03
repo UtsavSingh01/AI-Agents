@@ -6,6 +6,12 @@ authors = [{ name = "Your Name", email = "you@example.com" }]
 requires-python = ">=3.10,<3.14"
 dependencies = [
     "crewai[tools]>=0.150.0,<1.0.0",
+    "gradio>=5.39.0",
+    "groq>=0.30.0",
+    "openai>=1.98.0",
+    "openai-agents>=0.2.4",
+    "openai-sdk>=0.1.0",
+    "pdfservices-sdk>=4.2.0",
 ]
 
 [project.scripts]

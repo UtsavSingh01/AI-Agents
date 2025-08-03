@@ -3,8 +3,8 @@ import os
 from datetime import datetime
 import zipfile
 import json
+#from ..config import INPUT_FILE_PATH
 
-from src.padif.config import OUTPUT_DIR, INPUT_PDF_PATH
 from adobe.pdfservices.operation.auth.service_principal_credentials import ServicePrincipalCredentials
 from adobe.pdfservices.operation.exception.exceptions import ServiceApiException, ServiceUsageException, SdkException
 from adobe.pdfservices.operation.pdf_services_media_type import PDFServicesMediaType
@@ -26,9 +26,9 @@ logging.basicConfig(level=logging.INFO)
 # Refer to README.md for instructions on how to run the samples & understand output zip file.
 
 class ExtractTextInfoFromPDF:
-    def __init__(self):
-        try:
-            file = open(INPUT_PDF_PATH, 'rb')
+    def __init__(self, file_path):        
+        try:      
+            file = open(file_path, 'rb')
             input_stream = file.read()
             file.close()
             print("Input file opened successfully.")
@@ -85,7 +85,7 @@ class ExtractTextInfoFromPDF:
         time_stamp = now.strftime("%Y-%m-%dT%H-%M-%S")
         os.makedirs("./wwwroot/output/ExtractTextInfoFromPDF", exist_ok=True)
         return f"./wwwroot/output/ExtractTextInfoFromPDF/extract{time_stamp}.zip"
+    
 
 
-if __name__ == "__main__":
-    ExtractTextInfoFromPDF()
+

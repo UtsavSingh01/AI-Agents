@@ -1,4 +1,4 @@
-research_task:
+interpreter_task:
   description: >
     Conduct a thorough research about {topic}
     Make sure you find any interesting and relevant information given
@@ -7,7 +7,7 @@ research_task:
     A list with 10 bullet points of the most relevant information about {topic}
   agent: researcher
 
-reporting_task:
+editing_task:
   description: >
     Review the context you got and expand each topic into a full section for a report.
     Make sure the report is detailed and contains any and all relevant information.
@@ -15,3 +15,5 @@ reporting_task:
     A fully fledged report with the main topics, each with a full section of information.
     Formatted as markdown without '```'
   agent: reporting_analyst
+
+compiling_task:
