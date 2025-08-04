@@ -32,7 +32,7 @@ class PdfBuilder():
             verbose=False,
             max_retry_limit=3,
             max_execution_time=500,
-            reasoning=True      
+            reasoning=True    
         )
     @agent
     
@@ -60,13 +60,15 @@ class PdfBuilder():
         return Task(
             config=self.tasks_config['editing_task'],
             agent=self.latex_editor(),
+            context=[latex_interpreter]
         )
     
     @task
     def latex_compiler(self) ->Task:
         return Task(
             config=self.tasks_config['compiling_task'],
-            agent=self.latex_compiler()
+            agent=self.latex_compiler(),
+            context=[latex_editor]
         )
     
     @crew
