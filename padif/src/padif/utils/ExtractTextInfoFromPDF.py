@@ -66,15 +66,6 @@ class ExtractTextInfoFromPDF:
             with open(output_file_path, "wb") as file:
                 file.write(stream_asset.get_input_stream())
 
-            archive = zipfile.ZipFile(zip_file, 'r')
-            jsonentry = archive.open('structuredData.json')
-            jsondata = jsonentry.read()
-            data = json.loads(jsondata)
-
-            for element in data["elements"]:
-                if element["Path"].endswith("/H1"):
-                    print(element["Text"])
-
         except (ServiceApiException, ServiceUsageException, SdkException) as e:
             logging.exception(f'Exception encountered while executing operation: {e}')
 

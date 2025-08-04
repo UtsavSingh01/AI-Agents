@@ -1,19 +1,46 @@
 interpreter_task:
   description: >
-    Conduct a thorough research about {topic}
-    Make sure you find any interesting and relevant information given
-    the current year is {current_year}.
+    Read the given LaTeX code and parse its components including document class, packages, commands, environments, sections, and macros.
+    Build a complete semantic understanding of the code structure and relationships.
   expected_output: >
-    A list with 10 bullet points of the most relevant information about {topic}
-  agent: researcher
+    A comprehensive breakdown of the LaTeX code including:
+    - List of document-level declarations (e.g., \documentclass, \usepackage)
+    - Key sections (\section, \subsection, etc.)
+    - Custom commands or macros
+    - Dependency map of environments or variables
+  agent: latex_interpreter
+  llm:
 
 editing_task:
   description: >
-    Review the context you got and expand each topic into a full section for a report.
-    Make sure the report is detailed and contains any and all relevant information.
+    Analyze the parsed LaTeX structure to identify the exact part of the code that must be changed to fulfill the user’s modification request: "{user_instruction}".
+    Do not suggest improvements or rewrite anything unrelated to the user’s request.
+    Your output must be a clear, minimal edit plan outlining:
+    - The target line(s) or block(s) to modify
+    - The modification steps with LaTeX reasoning
   expected_output: >
-    A fully fledged report with the main topics, each with a full section of information.
-    Formatted as markdown without '```'
-  agent: reporting_analyst
+    A concise step-by-step LaTeX modification plan with:
+    - Affected LaTeX elements (e.g., font size, layout, alignment)
+    - Reasoning why those parts must be edited
+    - Snippets before vs after modification (ONLY for the change)
+  agent: latex_editor
+  llm:
 
 compiling_task:
+  description: >
+    Implement the LaTeX modification plan provided by the latex_editor to transform the original code.
+    You must apply the minimal, exact change without altering unrelated sections, formatting, spacing, or comments.
+    After modification, verify the final LaTeX is syntactically correct and compilable.
+  expected_output: >
+    Final LaTeX code with:
+    - Only the required modification applied
+    - Verified compilability (no syntax errors)
+    - Clean diff from the original, highlighting only the user-requested change
+  agent: latex_compiler
+  llm:
+
+  manage_task:
+   description: >
+    
+
+

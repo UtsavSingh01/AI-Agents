@@ -7,9 +7,14 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 # Input PDF file path
 INPUT_FILE_PATH = os.path.join(BASE_DIR, "wwwroot")
 
+#Current tex file
+TEX_FILE_PATH =os.path.join(BASE_DIR,"wwwroot")
+
 # Output folder to save extracted results
 OUTPUT_DIR = os.path.join(BASE_DIR, "wwwroot", "output", "ExtractTextInfoFromPDF")
 os.makedirs(OUTPUT_DIR, exist_ok=True) 
+
+
 
 
 intent_system_prompt = """
