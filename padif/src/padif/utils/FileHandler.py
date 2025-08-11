@@ -32,12 +32,3 @@ class FileHandler:
         """Run Adobe SDK-based processor"""
         #ExtractTextInfoFromPDF(self.filepath)
 
-    def read_pdf_text(self) -> str:
-        """Extract raw text from all PDF pages"""
-        reader = PdfReader(self.filepath)
-        pdf_content = ""
-        for page in reader.pages:
-            content = page.extract_text()
-            if content:
-                pdf_content += content
-        return pdf_content

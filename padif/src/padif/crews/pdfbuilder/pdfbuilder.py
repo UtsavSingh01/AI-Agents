@@ -14,13 +14,14 @@ class PdfBuilder():
     tasks_config='config/tasks.yaml'
     
     @agent
-    def  latex_interpreter(self)-> Agent:
+    def latex_interpreter(self)-> Agent:
         return Agent(
             config=self.agents_config['latex_interpreter'],
             allow_delegation=False,
             verbose=False,
             max_retry_limit=3,
             max_execution_time=500,
+            allow_code_execution=True,
             code_execution_mode='safe',
             reasoning=True
         )
@@ -34,7 +35,6 @@ class PdfBuilder():
             max_execution_time=500,
             reasoning=True    
         )
-    @agent
     
     @agent
     def latex_compiler(self) -> Agent:
@@ -44,6 +44,7 @@ class PdfBuilder():
             verbose=False,
             max_retry_limit=3,
             max_execution_time=500,
+            allow_code_execution=True,
             code_execution_mode='safe',
             reasoning=True
         )
@@ -60,7 +61,7 @@ class PdfBuilder():
         return Task(
             config=self.tasks_config['editing_task'],
             agent=self.latex_editor(),
-            context=[latex_interpreter]
+            context=["latex_interpreter"]
         )
     
     @task
@@ -68,7 +69,7 @@ class PdfBuilder():
         return Task(
             config=self.tasks_config['compiling_task'],
             agent=self.latex_compiler(),
-            context=[latex_editor]
+            context=["latex_interpreter","latex_editor"]
         )
     
     @crew
@@ -79,5 +80,4 @@ class PdfBuilder():
             process=Process.sequential,
             verbose=False,
             markdown=False
-        )
-    
+        )    

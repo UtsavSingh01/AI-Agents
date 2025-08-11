@@ -1,11 +1,14 @@
 import gradio as gr
 import subprocess
 import os
+from pypdf import PdfReader
 from uuid import uuid4
 import shutil
-from .utils.FileHandler import FileHandler
 from .userInputHandler import userInputHandler
-from .config import INPUT_FILE_PATH
+from .config import INPUT_FILE_PATH, set_faq_system_prompt
+import base64
+
+global content
 
 chat_history = []
 uploaded_file_path = None
@@ -19,20 +22,17 @@ def compile_tex_to_pdf(tex_path: str) -> str:
         subprocess.run(
             ["pdflatex", "-interaction=nonstopmode", tex_file],
             cwd=tex_dir,
-            stdout=subprocess.DEVNULL,
-            stderr=subprocess.DEVNULL,
+            capture_output=True,
             check=True
         )
         pdf_path = os.path.join(tex_dir, tex_file.replace(".tex", ".pdf"))
         return pdf_path if os.path.exists(pdf_path) else None
     except Exception as e:
-        print(f"Compilation error: {e}")
+        print("LaTeX compilation failed:")
         return None
 
 def preview_pdf_iframe(pdf_path: str) -> str:
     """Embed PDF preview using base64-encoded data URI inside iframe."""
-    import base64
-
     if pdf_path and os.path.exists(pdf_path):
         with open(pdf_path, "rb") as f:
             pdf_bytes = f.read()
@@ -48,9 +48,9 @@ def preview_pdf_iframe(pdf_path: str) -> str:
     return "<p style='color:red;'>❌ PDF preview failed — file not found</p>"
 
 
-def on_message(user_message, history):
+async def on_message(user_message, history):
     # Get bot response using your custom handler
-    bot_response = userInputHandler(user_message, history)
+    bot_response =await userInputHandler(user_message)
     
     # Update chat history
     updated_history = history + [(user_message, bot_response)]
@@ -60,6 +60,7 @@ def on_message(user_message, history):
 
 def on_upload(file):
     global uploaded_file_path
+    
 
     # Create input directory if needed
     os.makedirs(INPUT_FILE_PATH, exist_ok=True)
@@ -72,6 +73,23 @@ def on_upload(file):
     # Copy file to permanent storage
     shutil.copyfile(file.name, saved_path)
     uploaded_file_path = saved_path
+
+
+    reader= PdfReader(uploaded_file_path)
+    content = ""
+    for page in reader.pages:
+        text = page.extract_text()
+        if text:
+            content += text
+
+    print("Extracted content from PDF:", content)  # Print first 1000 characters for debugging
+    
+    set_faq_system_prompt(content)
+
+   
+
+   
+
 
     # Handle different file types
     if uploaded_file_path.endswith(".tex"):

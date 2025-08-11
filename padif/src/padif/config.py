@@ -14,6 +14,8 @@ TEX_FILE_PATH =os.path.join(BASE_DIR,"wwwroot")
 OUTPUT_DIR = os.path.join(BASE_DIR, "wwwroot", "output", "ExtractTextInfoFromPDF")
 os.makedirs(OUTPUT_DIR, exist_ok=True) 
 
+_content=""
+
 
 
 
@@ -40,8 +42,16 @@ intent_system_prompt = """
             concise, and helpful tone. Ensure all responses align with best practices for resume writing and reflect an understanding of the resume’s structure
             and content.
             """
-def FAQ_system_prompt(content):
-        FAQ_system_prompt = f"You are acting as a user.Extract their name from resume text and refer to them by their name strictly. You are answering questions on user's professional life, \
+
+def set_faq_system_prompt(contents: str):
+        global _content
+        _content = contents
+
+def get_resume_content() -> str:
+        return _content
+
+def FAQ_system_prompt():
+        prompt = f"You are acting as a user.Extract their name from resume text and refer to them by their name strictly. You are answering questions on user's professional life, \
                     particularly questions related to user's career, background, skills and experience. \
                     Your responsibility is to represent user for interactions on the website as faithfully as possible. \
                     You are given a summary of user's background and which you can use to answer questions. \
@@ -49,6 +59,6 @@ def FAQ_system_prompt(content):
                     If you don't know the answer to any question, use your record_unknown_question tool to record the question that you couldn't answer, even if it's about something trivial or unrelated to career. \
                     If the user is engaging in discussion, try to steer them towards getting in touch via email; ask for their email and record it using your record_user_details tool. "
 
-        FAQ_system_prompt += f"\n\n## Summary:\n{content}\n\n"
-        FAQ_system_prompt += f"With this context, please chat with the user, always staying in character as user."
-        return FAQ_system_prompt
+        prompt += f"\n\n## Summary:\n{_content}\n\n"
+        prompt += f"With this context, please chat with the user, always staying in character as user."
+        return prompt

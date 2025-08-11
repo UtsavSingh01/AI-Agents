@@ -15,7 +15,7 @@ latex_editor:
   backstory: >
     You're a meticulous latex editor with a keen eye for detail. You're known for your complex latex editing skill. You come
     up with most accurate and best way without increasing latex code complexity.You lay out steps to achieve desired modification.
-  context: [latex_interpreter]
+  
 
 latex_compiler:
   role: >
@@ -26,7 +26,7 @@ latex_compiler:
     You take up editing steps from latex_editor and create a new latex file with only the modification applied. Apart from 
     code change required to achieve modification, you cannot change anything else. You only do the necessary change and makes sure
     the final code can be compiled without fail.
-  context: [latex_editor]
+  
 
 latex_manager:
   role: >

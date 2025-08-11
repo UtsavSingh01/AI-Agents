@@ -9,7 +9,7 @@ interpreter_task:
     - Custom commands or macros
     - Dependency map of environments or variables
   agent: latex_interpreter
-  llm:
+  
 
 editing_task:
   description: >
@@ -24,7 +24,7 @@ editing_task:
     - Reasoning why those parts must be edited
     - Snippets before vs after modification (ONLY for the change)
   agent: latex_editor
-  llm:
+  
 
 compiling_task:
   description: >
@@ -37,10 +37,8 @@ compiling_task:
     - Verified compilability (no syntax errors)
     - Clean diff from the original, highlighting only the user-requested change
   agent: latex_compiler
-  llm:
+  
 
-  manage_task:
-   description: >
     
 
 
